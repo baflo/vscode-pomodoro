@@ -56,9 +56,9 @@ export class Pomodoro {
 		}
 	}
 
-	public async addTask() {
+	public async addTask(taskName?: string) {
 		const pomodoro = Pomodoro.getInstance();
-		const newTask: string = await InputPrompt(`Add a new task to the Pomodoro`, `task name`);
+		const newTask: string = await InputPrompt(`Add a new task to the Pomodoro`, taskName ?? `task name (test)`);
 
 		pomodoro.tasks.push(new Task(newTask, null));
 		pomodoro._storage.save();
