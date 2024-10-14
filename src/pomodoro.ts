@@ -56,9 +56,30 @@ export class Pomodoro {
 		}
 	}
 
-	public async addTask(taskName?: string) {
+	public async addTask({ taskId, taskName }: Record<"taskId" | "taskName", string | { command: string }>) {
 		const pomodoro = Pomodoro.getInstance();
-		const newTask: string = await InputPrompt(`Add a new task to the Pomodoro`, taskName ?? `task name (test)`);
+		let taskNamePlaceholder = "task name (test)";
+		let optionalTaskId: string;
+
+		if (typeof taskName === "string") {
+			taskNamePlaceholder = taskName;
+		} else if (typeof taskName === "object") {
+			const result = await vscode.commands.executeCommand(taskName.command);
+			if (typeof result === "string") {
+				taskNamePlaceholder = result;
+			}
+		}
+
+		if (typeof taskId === "string") {
+			optionalTaskId = taskId;
+		} else if (typeof taskId === "object") {
+			const result = await vscode.commands.executeCommand(taskId.command);
+			if (typeof result === "string") {
+				optionalTaskId = result;
+			}
+		}
+
+		const newTask: string = await InputPrompt(`Add a new task to the Pomodoro`, taskNamePlaceholder);
 
 		pomodoro.tasks.push(new Task(newTask, null));
 		pomodoro._storage.save();
