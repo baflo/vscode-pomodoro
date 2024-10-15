@@ -35,17 +35,17 @@
 			"type": "object",
 			"title": "Pomodoro Configurations",
 			"properties": {
-				"pomodoro.task_duarion": {
+				"pomodoro.task_duration": {
 					"type": "number",
 					"default": 25,
 					"description": "The default duration of a Pomodoro Task in minutes"
 				},
-				"pomodoro.break_duarion": {
+				"pomodoro.break_duration": {
 					"type": "number",
 					"default": 5,
 					"description": "The default duration of a Break in minutes"
 				},
-				"pomodoro.long_break_duarion": {
+				"pomodoro.long_break_duration": {
 					"type": "number",
 					"default": 15,
 					"description": "The default duration of a long Break in minutes"
@@ -80,7 +80,11 @@
 			},
 			{
 				"command": "pomodoro.finishTask",
-				"title": "Pomodoro: Finished Task"
+				"title": "Pomodoro: Finish Task"
+			},
+			{
+				"command": "pomodoro.getFinishedTasks",
+				"title": "Pomodoro: Get finished tasks (filtered by tag)"
 			}
 		]
 	},

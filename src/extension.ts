@@ -15,6 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand(`pomodoro.clear`, () => pomodoro.clearCompleted());	
 	vscode.commands.registerCommand(`pomodoro.pause`, () => pomodoro.pause());
 	vscode.commands.registerCommand(`pomodoro.finishTask`, () => pomodoro.stopTask());
+	vscode.commands.registerCommand(`pomodoro.getFinishedTasksCount`, (args: any) => pomodoro.getFinishedTasksCount(args));
 }
 
 export function deactivate() {}

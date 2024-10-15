@@ -56,10 +56,10 @@ export class Pomodoro {
 		}
 	}
 
-	public async addTask({ taskId, taskName }: Record<"taskId" | "taskName", string | { command: string }>) {
+	public async addTask({ taskName, taskTags }: { taskName?: string | { command: string }, taskTags?: Array<string | { command: string }>} = {}) {
 		const pomodoro = Pomodoro.getInstance();
 		let taskNamePlaceholder = "task name (test)";
-		let optionalTaskId: string;
+		let optionalTaskTags: string[] = [];
 
 		if (typeof taskName === "string") {
 			taskNamePlaceholder = taskName;
@@ -70,18 +70,25 @@ export class Pomodoro {
 			}
 		}
 
-		if (typeof taskId === "string") {
-			optionalTaskId = taskId;
-		} else if (typeof taskId === "object") {
-			const result = await vscode.commands.executeCommand(taskId.command);
-			if (typeof result === "string") {
-				optionalTaskId = result;
+		if (Array.isArray(taskTags)) {
+			for(const tagSource of taskTags){
+				if (typeof tagSource === "string") {
+					optionalTaskTags.push(tagSource);
+				} else if (typeof tagSource === "object") {
+					const result = await vscode.commands.executeCommand(tagSource.command);
+
+					if (typeof result === "string") {
+						optionalTaskTags.push(result);
+					} else if (Array.isArray(result)) {
+						optionalTaskTags.push(...result);
+					}
+				}
 			}
 		}
 
 		const newTask: string = await InputPrompt(`Add a new task to the Pomodoro`, taskNamePlaceholder);
 
-		pomodoro.tasks.push(new Task(newTask, null));
+		pomodoro.tasks.push(new Task(newTask, null, null, optionalTaskTags));
 		pomodoro._storage.save();
 
 		pomodoro._statusBars.updateTasksCounter(pomodoro.completedTasksCounter, pomodoro.tasks.length)
@@ -116,6 +123,19 @@ export class Pomodoro {
 		pomodoro.finishTask();
 		pomodoro._storage.save();
 		pomodoro.takeBreak();
+	}
+
+	public getFinishedTasks(tag?: string) {
+		const pomodoro = Pomodoro.getInstance();
+		const finishedTasks = pomodoro.tasks.filter(t => t.isCompleted);
+
+		return tag
+			? finishedTasks.filter(t => t.tags?.includes(tag))
+			: finishedTasks;
+	}
+
+	public getFinishedTasksCount(tag?: string) {
+		return this.getFinishedTasks(tag)?.length ?? 0;
 	}
 
 	private pickTask(): void {

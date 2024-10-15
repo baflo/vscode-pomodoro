@@ -26,15 +26,16 @@ export class TaskStorage {
 
     if (!fs.existsSync(this.filename)) {
       this._pomodoro.tasks = tasks
+      return;
     }
 
     try {
       let items = JSON.parse(fs.readFileSync(this.filename).toString());
 
       tasks = items.map(t => {
-        return new Task(t.name, t.startTime, t.isCompleted)
+        return new Task(t.name, t.startTime, t.isCompleted, t.tags)
       });
-      
+
       this._pomodoro.tasks = tasks;
 
     } catch (error) {

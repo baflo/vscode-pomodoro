@@ -6,8 +6,10 @@ export class Task {
   public startTime: string;
   public pauseTime: string;
   public isCompleted: boolean;
+  public tags: string[] = [];
 
-  constructor(_name: string, _startTime: string, _isCompleted: boolean = false) {
+  constructor(_name: string, _startTime: string, _isCompleted: boolean = false, tags: string[]) {
+    this.tags = tags;
     this.name = _name;
     this.startTime = _startTime;
     this.isCompleted = _isCompleted;
